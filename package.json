@@ -1,0 +1,25 @@
+{
+  "name": "employee-tracker",
+  "version": "1.0.0",
+  "description": "Content Management Systems",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/diogocandidos/Employee-Tracker.git"
+  },
+  "author": "Diogo Candido",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/diogocandidos/Employee-Tracker/issues"
+  },
+  "homepage": "https://github.com/diogocandidos/Employee-Tracker#readme",
+  "dependencies": {
+    "console-table": "^0.1.2",
+    "inquirer": "^7.3.3",
+    "mysql": "^2.18.1",
+    "node": "^14.11.0"
+  }
+}
