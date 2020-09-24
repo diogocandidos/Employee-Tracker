@@ -91,7 +91,7 @@ console.log("Command-Line");
 
 //"View All Departments"
 function checkDeparts() {
-  query = "SELECT employee.first_name, employee.last_name, department.name FROM employee JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id ORDER BY employee.id";
+  query = "SELECT * FROM trackerDB.department";
   connection.query(query, function (err, res) { 
     if (err) throw err;
 
@@ -101,9 +101,9 @@ function checkDeparts() {
   })
 }
 
-//"View All Employees"
+//"View All Employees" ================MANAGER COLUMN==================
 function checkEmpl() {
-  query = "SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name, CONCAT(employee.first_name, ' ' ,employee.last_name) AS Manager FROM employee INNER JOIN role ON role.id = employee.role_id INNER JOIN department ON department.id = role.department_id LEFT JOIN employee e ON employee.manager_id = e.id";
+  query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name, CONCAT(employee.first_name, ' ' ,employee.last_name) AS Manager FROM employee INNER JOIN role ON role.id = employee.role_id INNER JOIN department ON department.id = role.department_id LEFT JOIN role r ON role.id = employee.manager_id";
   connection.query(query, function (err, res) { 
     if (err) throw err;
 
@@ -115,7 +115,7 @@ function checkEmpl() {
 
 //"View All Roles"
 function checkRoles() {
-  query = "SELECT employee.first_name, employee.last_name, role.title FROM employee JOIN role ON employee.role_id = role.id";
+  query = "SELECT * FROM trackerDB.role";
   connection.query(query, function (err, res) { 
     if (err) throw err;
 
@@ -125,107 +125,141 @@ function checkRoles() {
   })
 }
 
-//"Arrays"
-var roleTB = [];
-function selRoleTB() {
-  connection.query("SELECT* FROM trackerDB.role WHERE title = ?",
-  function(err, res) {
-    if (err) throw err
-    for (var i = 0; i < res.length; i++) {
-      roleTB.push(res[i].title);
-    }
+// Add Employee
+function addEmpl() {
+  inquirer.prompt([
+    {
+      type: "input",
+      name: "firstName",
+      message: "Insert the first name of the employee"
+    },
+    {
+      type: "input",
+      name: "lastName",
+      message: "Insert the last name"
+    },
+    {
+      type: "input",
+      name: "managerId",
+      message: "Insert the manager id number"
+    },
+    {
+      type: "input",
+      name: "roleId",
+      message: "Insert the role id number"
+    },
+  ])
+  .then(function(val) {
+    var query = connection.query("INSERT INTO employee (first_name, last_name, manager_id, role_id) VALUES (?, ?, ?, ?)",
+      [val.firstName, val.lastName, val.managerId, val.roleId],
+      function(err, res) {
+      if (err) throw err
+      console.table(res)
+      startCommand();
+    })
   })
-  return roleTB; 
 }
 
-var managerTB = [];
-function selManagerTB() {
-  connection.query("SELECT first_name, last_name FROM trackerDB.employee WHERE manager_id IS NULL",
-  function(err, res) {
-    if (err) throw err
-    for (var i = 0; i < res.length; i++) {
-      managerTB.push(res[i].title);
-    }
+// "Add Department":
+function addDept() {
+      inquirer.prompt([
+        {
+          type: "input",
+          name: "department",
+          message: "Insert the name of the department"
+        },
+    ])
+    .then(function(answer) {
+      connection.query("INSERT INTO department (name) VALUE (?)", 
+      [answer.department], 
+      function (err, res) {
+        if (err) throw err
+        console.table(res);
+        startCommand();
+      })
+    })
+}            
+
+// ADD ROLE 
+function addRole() {
+  inquirer.prompt([
+    {
+      type: "input",
+      name: "role",
+      message: "Insert the name of the role"
+    },
+    {
+      type: "input",
+      name: "salary",
+      message: "Insert the salary"
+    },
+    {
+      type: "input",
+      name: "deptId",
+      message: "Insert the department id number"
+    },
+  ])
+  .then(function(answer) {
+    connection.query("INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)",
+    [answer.role, answer.salary, answer.deptId],
+      function(err, res) {
+      if (err) throw err
+      console.table(res)
+      startCommand();
+    })
   })
-  return managerTB; 
 }
 
-// //"Add Employee"
-// function addEmpl() {
-//     inquirer.prompt([
-//       {
-//         type: "input",
-//         name: "firstName",
-//         message: "Insert the first name of the employee"
-//       },
-//       {
-//         type: "input",
-//         name: "lastName",
-//         message: "Insert the last name"
-//       },
-//       {
-//         type: "input",
-//         name: "roleId",
-//         message: "Insert the role id number"
-//         choice: selRoleTB()
-//       },
-//       {
-//         type: "input",
-//         name: "managerId",
-//         message: "Insert the  manager id number"
-//         choice: selManagerTB()
-//       },
-      
-//     ])
-//     .then(function (answer) {
-//       var roleID = selRoleTB().indexOf(answer.roleId) + 1
-//       var managerID = selManagerTB().indexOf(answer.managerId) + 1
-//       var query = connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)",
-//       {
-//        answer.firstName, answer.lastName, answer.roleID, answer.managerID
-//       };
-      
-//       function(err) {
-//         if (err) throw err
-//         console.table(answer);
-//         startCommand();
-//       }
-//     })
-// }
 
-//"Delete Employee":
+// Update Employee Role" ================================== // =========== Add role
+function updateEmplRole() {
+  inquirer.prompt([
+    {
+      type: "input",
+      name: "upName",
+      message: "Insert the new last name of the employee"
+    },
+    {
+      type: "input",
+      name: "upRoleId",
+      message: "Insert the role id of the employee"
+    },
+
+  ])
+  .then(function(val) {
+    var query = connection.query("UPDATE employee SET last_name= ? WHERE id= ?", 
+      [val.upName, val.upRoleId],
+      function(err, res) {
+      if (err) throw err
+      console.table(res)
+      startCommand();
+    })
+  })
+}
+
+//"Delete Employee" ========== terminal runs but not delete=============
 function deleteEmpl() {
-  query = "SELECT employee.first_name, employee.last_name, role.title, role.salary, department.name, CONCAT(employee.first_name, ' ' ,employee.last_name) AS Manager FROM employee INNER JOIN role ON role.id = employee.role_id INNER JOIN department ON department.id = role.department_id LEFT JOIN employee e ON employee.manager_id = e.id";
+  query = "SELECT * FROM trackerDB.employee";
+  // query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name, CONCAT(employee.first_name, ' ' ,employee.last_name) AS Manager FROM employee INNER JOIN role ON role.id = employee.role_id INNER JOIN department ON department.id = role.department_id LEFT JOIN role r ON role.id = employee.manager_id";
   connection.query(query, function (err, res) { 
     if (err) throw err;
     inquirer.prompt([
       {
     type: "input",
     name: "delEmpl",
-    message: "Insert the role id of the employee to remove"
+    message: "Insert the ID of the employee to remove"
   },
   ])
 
   .then(function(answer) {
-    connection.query("DELETE FROM employee WHERE role_id = ?", 
+    connection.query("DELETE FROM trackerDB.employee WHERE id = ?", 
       {
          id: answer.delEmpl
       })
      
-      console.table(res)
+    console.table(res)
     startCommand ();
 
     })
   })
 }
-
-              
-// "Add Department":
-//              addDept();
-//          "Add Role":
-//               addRole();
-//          "Update Employee Role":
-//               updateEmplRole();
-//    
-
-            
