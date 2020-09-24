@@ -52,8 +52,8 @@ VALUE ("Legal"); -- ID = 4 --
 
 
 -- INSERTING ROLE DB--
-INSERT INTO role (title, salary, department_id)
-VALUE ("Sales Lead", 100000, 1); -- Winston --
+INSERT INTO role (title, salary, department_id)  
+VALUE ("Sales Lead", 100000, 1); 
 INSERT INTO role (title, salary, department_id)
 VALUE ("Salesperson", 80000, 1);
 
@@ -96,11 +96,9 @@ VALUE ("Brian", "Lambe", 6, 8);
 
 
 -- SELECTING TABLES ---
-SELECT 
-	*	 FROM department;
+SELECT *	 FROM department;
 
-SELECT 
-	*	 FROM role;
+SELECT *	 FROM role;
     
-SELECT 
-	*	 FROM employee;
+SELECT *	 FROM employee;
+
