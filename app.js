@@ -89,6 +89,7 @@ function startCommand() {
 
 console.log("Command-Line");
 
+
 //"View All Departments"
 function checkDeparts() {
   query = "SELECT * FROM trackerDB.department";
@@ -101,9 +102,9 @@ function checkDeparts() {
   })
 }
 
-//"View All Employees" ================MANAGER COLUMN==================
+//"View All Employees" 
 function checkEmpl() {
-  query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name, CONCAT(employee.first_name, ' ' ,employee.last_name) AS Manager FROM employee INNER JOIN role ON role.id = employee.role_id INNER JOIN department ON department.id = role.department_id LEFT JOIN role r ON role.id = employee.manager_id";
+  query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ' , manager.last_name) AS manager FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON manager.id = employee.manager_id";
   connection.query(query, function (err, res) { 
     if (err) throw err;
 
@@ -239,9 +240,8 @@ function updateEmplRole() {
 
 //"Delete Employee" ========== terminal runs but not delete=============
 function deleteEmpl() {
-  query = "SELECT * FROM trackerDB.employee";
-  // query = "SELECT employee.id, employee.first_name, employee.last_name, role.title, role.salary, department.name, CONCAT(employee.first_name, ' ' ,employee.last_name) AS Manager FROM employee INNER JOIN role ON role.id = employee.role_id INNER JOIN department ON department.id = role.department_id LEFT JOIN role r ON role.id = employee.manager_id";
-  connection.query(query, function (err, res) { 
+  query = "SELECT * FROM employee";
+    connection.query(query, function (err, res) { 
     if (err) throw err;
     inquirer.prompt([
       {
@@ -252,10 +252,11 @@ function deleteEmpl() {
   ])
 
   .then(function(answer) {
-    connection.query("DELETE FROM trackerDB.employee WHERE id = ?", 
+    console.log(answer);
+    connection.query("DELETE FROM employee WHERE id = ?", 
       {
          id: answer.delEmpl
-      })
+      });
      
     console.table(res)
     startCommand ();
@@ -263,3 +264,5 @@ function deleteEmpl() {
     })
   })
 }
+
+startCommand ();
