@@ -11,7 +11,7 @@ Design a database schema containing three tables:
 
 ![Database Schema](Assets/schema.png)
 
-The business owner should be to view and manage the departments, roles, and employees in the company with the following options:
+The business owner should be able to view and manage the departments, roles, and employees in the company with the following options:
 
 * 
     * View Employees by Department
