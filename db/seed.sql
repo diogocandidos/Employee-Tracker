@@ -96,9 +96,9 @@ VALUE ("Brian", "Lambe", 6, 8);
 
 
 -- SELECTING TABLES ---
-SELECT *	 FROM department;
+SELECT * FROM department;
 
-SELECT *	 FROM role;
+SELECT * FROM role;
     
-SELECT *	 FROM employee;
+SELECT * FROM employee;
 
