@@ -1,8 +1,8 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
-var table = require('console.table');
-var db = require(".");
-const { Console } = require("console");
+//var table = require('console.table');
+//var db = require(".");
+//const { Console } = require("console");
 
 var connection = mysql.createConnection({
   host: "localhost",
